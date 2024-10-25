@@ -1,15 +1,84 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Gradient from "../gradient";
 import Slider from "../slider";
+import violent from "@/public/violent_crimes.jpeg";
 
 function Player() {
-  const [paused, setPaused] = React.useState(false);
+  const [paused, setPaused] = useState(true);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    if (audio) {
+      audio.addEventListener("timeupdate", handleTimeUpdate);
+      audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.addEventListener("canplay", handleLoadedMetadata); // Ensure duration gets set when audio is ready to play
+
+      // If the audio duration is already available, set it directly
+      if (audio.readyState >= 1) {
+        setDuration(audio.duration);
+      }
+    }
+
+    return () => {
+      if (audio) {
+        audio.removeEventListener("timeupdate", handleTimeUpdate);
+        audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+        audio.removeEventListener("canplay", handleLoadedMetadata);
+      }
+    };
+  }, []);
 
   function handleClick() {
-    setPaused((prev) => !prev);
+    const audio = audioRef.current;
+    if (audio) {
+      if (isPlaying) {
+        audio.pause();
+        setIsPlaying(false);
+        setPaused(true);
+      } else {
+        audio.play();
+        setIsPlaying(true);
+        setPaused(false);
+      }
+    }
+  }
+
+  const handleTimeUpdate = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      setCurrentTime(audio.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      setDuration(audio.duration);
+    }
+  };
+
+  const handleSeek = (value: number) => {
+    const audio = audioRef.current;
+    if (audio) {
+      const newTime = value * duration;
+      audio.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
+  };
+
+  function formatDuration(durationSeconds: number) {
+    const minutes = Math.floor(durationSeconds / 60);
+    const seconds = Math.floor(durationSeconds % 60);
+    const formattedSeconds = seconds.toString().padStart(2, "0");
+    return `${minutes}:${formattedSeconds}`;
   }
 
   return (
@@ -24,18 +93,32 @@ function Player() {
       onMouseDown={handleClick}
     >
       <div className="flex flex-col gap-4 w-full max-w-[400px]">
-        <h1 className="text-7xl tracking-tighter font-light">Press to Play</h1>
-        <Slider value={30} />
+        <h1 className="text-7xl tracking-tighter font-light">
+          {paused ? "Press to Play" : "Rizz Music"}
+        </h1>
+        {/* Updated Slider */}
+        <Slider
+          value={duration ? currentTime / duration : 0}
+          onSeek={handleSeek}
+        />
         <div className="flex gap-3">
-          <div className="rounded-md h-12 w-12 bg-slate-400" />
+          <img
+            src={violent.src}
+            className="rounded-md h-16 w-16 bg-slate-400"
+          />
           <div className="flex flex-col">
-            <span className="font-semibold">La Noche</span>
-            <span className="font-light text-xs">Yago</span>
+            <span className="font-semibold">Violent Crimes</span>
+            <span className="font-light text-xs">Kanye West</span>
           </div>
         </div>
       </div>
+      <audio ref={audioRef} src="/violent_crimes.mp3" preload="metadata" />
+      <div className="track-duration">
+        <p>{formatDuration(currentTime)}</p>
+        <p>{formatDuration(duration)}</p>
+      </div>
+
       <motion.div
-        // data-trigger-container={true}
         className="absolute inset-0 z-[-1]"
         animate={{
           opacity: paused ? 0.8 : 1,

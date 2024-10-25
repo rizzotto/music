@@ -3,7 +3,9 @@ import { ShaderGradientCanvas, ShaderGradient } from "shadergradient";
 
 function Gradient() {
   return (
-    <ShaderGradientCanvas>
+    <ShaderGradientCanvas
+      style={{ position: "absolute", pointerEvents: "none" }}
+    >
       <ShaderGradient
         enableTransition={false}
         animate="on"
