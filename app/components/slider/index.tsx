@@ -46,7 +46,7 @@ function Slider({ value, onSeek }: SliderProps) {
   return (
     <span
       ref={containerRef}
-      className="flex touch-none h-6 py-2"
+      className="flex touch-none h-6 py-2 max-w-[400px]"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
