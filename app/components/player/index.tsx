@@ -188,8 +188,8 @@ function Player() {
               alt="album cover"
             />
             <div className="flex flex-col">
-              <span className="font-semibold">Violent Crimes</span>
-              <span className="font-light text-xs">Kanye West</span>
+              <span className="font-semibold">Glitter</span>
+              <span className="font-light text-xs">Tyler, The Creator</span>
             </div>
           </div>
         </div>

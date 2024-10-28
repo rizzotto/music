@@ -22,6 +22,7 @@ function Slider({ value, onSeek }: SliderProps) {
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsDragging(true);
     handleMove(e.clientX);
   };

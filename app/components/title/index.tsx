@@ -6,7 +6,7 @@ function Title({ title }: { title: string }) {
   let index = 0;
 
   return (
-    <h1 className="text-8xl font-light leading-[0.9] tracking-[-0.1em] md:text-9xl md:leading-[0.9] md:tracking-[-0.1em]">
+    <h1 className="text-7xl font-light leading-[0.9] tracking-[-0.1em] md:text-8xl md:leading-[0.9] md:tracking-[-0.1em]">
       {words.map((word, i) => (
         <motion.span key={i} className="inline-block mr-8 break-keep">
           {word.split("").map((c, j) => (
