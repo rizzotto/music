@@ -110,26 +110,23 @@ function Player() {
     return `${minutes}:${formattedSeconds}`;
   }
 
-  // REWORK EVERYTHING - CHECK DEFAULT START
   function visualize() {
     const canvas = canvasRef.current;
     const analyser = analyserRef.current;
+    const canvasCtx = canvas?.getContext("2d");
 
-    console.log("aaaaaa");
-
-    if (canvas && analyser) {
-      const canvasCtx = canvas.getContext("2d");
-      const bufferLength = analyser.frequencyBinCount;
+    if (canvas && canvasCtx) {
+      const bufferLength = analyser ? analyser.frequencyBinCount : 0;
       const dataArray = new Uint8Array(bufferLength);
 
       const draw = () => {
         requestAnimationFrame(draw);
 
-        analyser.getByteFrequencyData(dataArray);
+        if (analyser) {
+          analyser.getByteFrequencyData(dataArray);
+        }
 
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Set transparent background
         canvasCtx.fillStyle = "rgba(0, 0, 0, 0)";
         canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -137,16 +134,36 @@ function Player() {
         let barHeight;
         let x = 0;
 
-        for (let i = 0; i < bufferLength; i++) {
-          // Default barHeight of 2 pixels if data is minimal
-          barHeight = dataArray[i] / 3 || 2;
-          barHeight = Math.max(barHeight, 2);
+        if (analyser) {
+          for (let i = 0; i < bufferLength; i++) {
+            barHeight = dataArray[i] / 3 || 2;
+            barHeight = Math.max(barHeight, 2);
 
-          // Scale down bars for a smaller visual effect
-          canvasCtx.fillStyle = "#ffffff";
-          canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+            canvasCtx.fillStyle = "#ffffff";
+            canvasCtx.fillRect(
+              x,
+              canvas.height - barHeight,
+              barWidth,
+              barHeight
+            );
 
-          x += barWidth + 6; // Adjust spacing
+            x += barWidth + 6;
+          }
+        } else {
+          for (let i = 0; i < 38; i++) {
+            barHeight = 2;
+            barHeight = Math.max(barHeight, 2);
+
+            canvasCtx.fillStyle = "#ffffff";
+            canvasCtx.fillRect(
+              x,
+              canvas.height - barHeight,
+              barWidth,
+              barHeight
+            );
+
+            x += barWidth + 6;
+          }
         }
       };
       draw();
@@ -154,9 +171,8 @@ function Player() {
   }
 
   useEffect(() => {
-    if (analyserRef.current) {
-      visualize();
-    }
+    visualize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [analyserRef.current]);
 
   return (
@@ -168,7 +184,7 @@ function Player() {
         duration: 0.5,
       }}
       className="relative flex flex-col h-svh px-10 py-14 z-[2] text-white md:p-20"
-      onMouseDown={handleClick}
+      onClick={handleClick}
     >
       <div className="flex flex-col justify-between h-full">
         <div className="flex flex-col gap-4 w-full max-w-[700px]">
@@ -196,7 +212,7 @@ function Player() {
         <audio ref={audioRef} src="/glitter.mp3" preload="metadata" />
         <div className="flex flex-col gap-1">
           <canvas ref={canvasRef} className="mt-4 w-[250px]" />
-          <div className="track-duration">
+          <div className="track-duration text-xs">
             <p>{formatDuration(currentTime)}</p>
           </div>
         </div>
