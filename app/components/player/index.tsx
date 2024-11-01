@@ -6,6 +6,7 @@ import Gradient from "../gradient";
 import Slider from "../slider";
 import glitter from "@/public/glitter.jpg";
 import Title from "../title";
+import Settings from "../settings";
 
 function Player() {
   const [paused, setPaused] = useState(true);
@@ -209,6 +210,7 @@ function Player() {
             </div>
           </div>
         </div>
+        <Settings />
         <audio ref={audioRef} src="/glitter.mp3" preload="metadata" />
         <div className="flex flex-col gap-1">
           <canvas ref={canvasRef} className="mt-4 w-[250px]" />
