@@ -21,6 +21,11 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Rizz Music",
   },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 export default function RootLayout({
   children,
