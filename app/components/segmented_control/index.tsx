@@ -21,11 +21,7 @@ export default function SegmentedControl() {
       <MotionConfig transition={{ type: "spring", bounce: 0, duration: 0.4 }}>
         <motion.ul
           layout
-          className={clsx(
-            "mx-auto flex w-fit gap-2 br-",
-
-            "flex-row justify-center"
-          )}
+          className="mx-auto flex w-fit gap-2       flex-row justify-center"
         >
           {TABS.map((tab) => (
             <motion.li
@@ -36,8 +32,7 @@ export default function SegmentedControl() {
               tabIndex={0}
               key={tab}
               onFocus={() => handler(tab)}
-              onMouseOver={() => handler(tab)}
-              onMouseLeave={() => handler(tab)}
+              onClick={() => handler(tab)}
             >
               {gradient.type === tab ? (
                 <motion.div
