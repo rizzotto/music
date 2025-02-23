@@ -1,182 +1,28 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import Gradient from "../gradient";
 import Slider from "../slider";
 import Title from "../title";
 import { useAppContext } from "@/app/context/provider";
 import { Navbar } from "../navbar_menu";
+import useAudioPlayer from "@/app/hooks/useAudioPlayer";
+import Visualizer from "../visualizer"; // Import the Visualizer component
 
 function Player() {
   const { currentSong } = useAppContext();
 
-  const [paused, setPaused] = useState(true);
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-
-    if (audio) {
-      audio.addEventListener("timeupdate", handleTimeUpdate);
-      audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-      audio.addEventListener("canplay", handleLoadedMetadata);
-
-      if (audio.readyState >= 1) {
-        setDuration(audio.duration);
-      }
-    }
-
-    return () => {
-      if (audio) {
-        audio.removeEventListener("timeupdate", handleTimeUpdate);
-        audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-        audio.removeEventListener("canplay", handleLoadedMetadata);
-      }
-      audioContextRef.current?.close();
-    };
-  }, []);
-
-  function initializeAudioContext() {
-    if (!audioContextRef.current) {
-      const audioContext = new (window.AudioContext ||
-        (window as any).webkitAudioContext)();
-      audioContextRef.current = audioContext;
-
-      const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 256;
-      analyserRef.current = analyser;
-
-      const audio = audioRef.current;
-      if (audio) {
-        const source = audioContext.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-      }
-    }
-  }
-
-  function handleClick() {
-    const audio = audioRef.current;
-
-    if (audio) {
-      initializeAudioContext();
-
-      // Resume audio context for browsers that require user interaction
-      audioContextRef.current?.resume().then(() => {
-        if (isPlaying) {
-          audio.pause();
-          setIsPlaying(false);
-          setPaused(true);
-        } else {
-          audio.play();
-          setIsPlaying(true);
-          setPaused(false);
-        }
-      });
-    }
-  }
-
-  const handleTimeUpdate = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      setCurrentTime(audio.currentTime);
-    }
-  };
-
-  const handleLoadedMetadata = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      setDuration(audio.duration);
-    }
-  };
-
-  const handleSeek = (value: number) => {
-    const audio = audioRef.current;
-    if (audio) {
-      const newTime = value * duration;
-      audio.currentTime = newTime;
-      setCurrentTime(newTime);
-    }
-  };
-
-  function formatDuration(durationSeconds: number) {
-    const minutes = Math.floor(durationSeconds / 60);
-    const seconds = Math.floor(durationSeconds % 60);
-    const formattedSeconds = seconds.toString().padStart(2, "0");
-    return `${minutes}:${formattedSeconds}`;
-  }
-
-  function visualize() {
-    const canvas = canvasRef.current;
-    const analyser = analyserRef.current;
-    const canvasCtx = canvas?.getContext("2d");
-
-    if (canvas && canvasCtx) {
-      const bufferLength = analyser ? analyser.frequencyBinCount : 0;
-      const dataArray = new Uint8Array(bufferLength);
-
-      const draw = () => {
-        requestAnimationFrame(draw);
-
-        if (analyser) {
-          analyser.getByteFrequencyData(dataArray);
-        }
-
-        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-        canvasCtx.fillStyle = "rgba(0, 0, 0, 0)";
-        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-
-        const barWidth = 2;
-        let barHeight;
-        let x = 0;
-
-        if (analyser) {
-          for (let i = 0; i < bufferLength; i++) {
-            barHeight = dataArray[i] / 3 || 2;
-            barHeight = Math.max(barHeight, 2);
-
-            canvasCtx.fillStyle = "#ffffff";
-            canvasCtx.fillRect(
-              x,
-              canvas.height - barHeight,
-              barWidth,
-              barHeight
-            );
-
-            x += barWidth + 6;
-          }
-        } else {
-          for (let i = 0; i < 38; i++) {
-            barHeight = 2;
-            barHeight = Math.max(barHeight, 2);
-
-            canvasCtx.fillStyle = "#ffffff";
-            canvasCtx.fillRect(
-              x,
-              canvas.height - barHeight,
-              barWidth,
-              barHeight
-            );
-
-            x += barWidth + 6;
-          }
-        }
-      };
-      draw();
-    }
-  }
-
-  useEffect(() => {
-    visualize();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [analyserRef.current]);
+  const {
+    audioRef,
+    paused,
+    currentTime,
+    duration,
+    handlePlayPause,
+    handleSeek,
+    formatDuration,
+    analyserRef,
+  } = useAudioPlayer();
 
   return (
     <motion.main
@@ -187,11 +33,14 @@ function Player() {
         duration: 0.5,
       }}
       className="relative flex flex-col h-svh px-10 py-14 z-[2] text-white md:p-20"
-      onClick={handleClick}
+      onClick={handlePlayPause}
     >
       <div className="flex flex-col justify-between h-full">
         <div className="flex flex-col gap-4 w-full max-w-[700px]">
-          <Title title={paused ? "Press to Play" : "Rizz Music"} />
+          <Title
+            title={paused ? "Press to Play" : "Rizz Music"}
+            onPlayPause={handlePlayPause}
+          />
           <Slider
             value={duration ? currentTime / duration : 0}
             onSeek={handleSeek}
@@ -219,12 +68,10 @@ function Player() {
           </motion.div>
         </div>
         <audio ref={audioRef} src={currentSong.src} preload="metadata" />
-        <div className="flex flex-col gap-1">
-          <canvas ref={canvasRef} className="mt-4 w-[250px]" />
-          <div className="track-duration text-xs">
-            <p>{formatDuration(currentTime)}</p>
-          </div>
-        </div>
+        <Visualizer
+          analyser={analyserRef.current}
+          time={formatDuration(currentTime)}
+        />
       </div>
 
       <Navbar />
@@ -247,4 +94,5 @@ function Player() {
     </motion.main>
   );
 }
+
 export default Player;

@@ -17,9 +17,9 @@ function Gradient() {
         cDistance={2.8}
         cPolarAngle={80}
         cameraZoom={9.1}
-        color1={"#606080"}
-        color2={"#8319c1"}
-        color3={"#4f0a83"}
+        color1={gradient.colors[0]}
+        color2={gradient.colors[1]}
+        color3={gradient.colors[2]}
         envPreset="city"
         grain={gradient.grain ? "on" : "off"}
         lightType="3d"

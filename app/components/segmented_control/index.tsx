@@ -31,7 +31,7 @@ export default function SegmentedControl() {
             <motion.li
               layout
               className={clsx(
-                "relative cursor-pointer px-2 py-1 text-sm outline-none transition-colors text-white"
+                "relative cursor-pointer px-2 py-1 text-sm outline-none transition-colors text-black"
               )}
               tabIndex={0}
               key={tab}
@@ -42,7 +42,7 @@ export default function SegmentedControl() {
               {gradient.type === tab ? (
                 <motion.div
                   layoutId="tab-indicator"
-                  className="absolute inset-0 rounded-lg bg-white/10"
+                  className="absolute inset-0 rounded-lg bg-white border border-black"
                 />
               ) : null}
               <span className="relative text-inherit">{tab}</span>

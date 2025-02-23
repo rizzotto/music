@@ -1,12 +1,29 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-function Title({ title }: { title: string }) {
+function Title({
+  title,
+  onPlayPause,
+}: {
+  title: string;
+  onPlayPause: () => void;
+}) {
   const words = React.useMemo(() => title.split(" "), [title]);
   let index = 0;
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onPlayPause();
+    }
+  };
+
   return (
-    <h1 className="text-7xl font-light leading-[0.9] tracking-[-0.1em] md:text-8xl md:leading-[0.9] md:tracking-[-0.1em]">
+    <h1
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      className="text-7xl font-light leading-[0.9] tracking-[-0.1em] md:text-8xl md:leading-[0.9] md:tracking-[-0.1em]"
+    >
       {words.map((word, i) => (
         <motion.span key={i} className="inline-block mr-8 break-keep">
           {word.split("").map((c, j) => (

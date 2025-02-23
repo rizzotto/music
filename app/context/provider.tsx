@@ -28,6 +28,8 @@ export const songs = [
   },
 ];
 
+export const defaultColors = ["#606080", "#8319c1", "#4f0a83"];
+
 export type Song = {
   title: string;
   artist: string;
@@ -38,6 +40,7 @@ export type Song = {
 export type Gradient = {
   type: string;
   grain: boolean;
+  colors: string[];
 };
 
 type AppContextType = {
@@ -59,6 +62,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [gradient, setGradient] = useState<Gradient>({
     type: "Water Plane",
     grain: true,
+    colors: defaultColors,
   });
 
   return (
