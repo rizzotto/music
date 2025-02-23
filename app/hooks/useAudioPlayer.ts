@@ -52,6 +52,20 @@ const useAudioPlayer = () => {
     }
   };
 
+  const switchSong = (src: string) => {
+    const audio = audioRef.current;
+
+    if (audio) {
+      audio.src = src;
+      audio.load();
+      audio.play().then(() => {
+        if (paused) {
+          setPaused(false);
+        }
+      });
+    }
+  };
+
   // Handle time update
   const handleTimeUpdate = () => {
     const audio = audioRef.current;
@@ -123,15 +137,16 @@ const useAudioPlayer = () => {
   }, []);
 
   return {
+    analyserRef,
     audioRef,
-    isPlaying,
-    paused,
     currentTime,
     duration,
+    formatDuration,
     handlePlayPause,
     handleSeek,
-    formatDuration,
-    analyserRef,
+    isPlaying,
+    paused,
+    switchSong,
   };
 };
 

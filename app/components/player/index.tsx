@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import Gradient from "../gradient";
 import Slider from "../slider";
@@ -14,15 +14,22 @@ function Player() {
   const { currentSong } = useAppContext();
 
   const {
+    analyserRef,
     audioRef,
-    paused,
     currentTime,
     duration,
+    formatDuration,
     handlePlayPause,
     handleSeek,
-    formatDuration,
-    analyserRef,
+    paused,
+    switchSong,
   } = useAudioPlayer();
+
+  useEffect(() => {
+    if (currentSong.src) {
+      switchSong(currentSong.src);
+    }
+  }, [currentSong]);
 
   return (
     <motion.main
