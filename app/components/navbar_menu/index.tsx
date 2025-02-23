@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import {
   IconArrowsShuffle,
   IconMusic,
@@ -81,7 +80,7 @@ export const MenuItem = ({
           transition={transition}
         >
           {active === item && (
-            <div className="absolute top-[calc(100%_-_2.8rem)] right-[32px] pr-3 pt-4 z-50">
+            <div className="absolute top-[calc(100%_-_3.2rem)] right-[38px] pr-3 pt-4 z-50">
               <motion.div
                 transition={transition}
                 layoutId="active" // layoutId ensures smooth animation
@@ -112,7 +111,7 @@ export const Menu = ({
   return (
     <nav
       onMouseLeave={() => setActive(null)} // Reset state on mouse leave
-      className="relative rounded-full border border-white/[0.2] bg-opacity-5 bg-white shadow-input flex flex-col justify-center px-2 py-4 gap-6"
+      className="relative rounded-full border border-white/[0.2] bg-opacity-5 bg-white shadow-input flex flex-col justify-center px-4 py-6 gap-6"
     >
       {children}
     </nav>
@@ -134,18 +133,16 @@ export const Song = ({ song }: { song: SongType }) => {
       onClick={() => setCurrentSong(song)}
       onKeyDown={handleKeyDown} // Handle keyboard interactions
       tabIndex={0}
-      className="flex space-x-2 cursor-pointer focus-visible::outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-50 rounded-md"
+      className="flex space-x-2 cursor-pointer focus-visible::outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-50 rounded-md md:gap-2"
     >
-      <Image
+      <motion.img
         src={song.cover}
-        width={64}
-        height={64}
         alt={song.cover}
-        className="flex-shrink-0 rounded-md"
+        className="flex-shrink-0 h-16 w-16 md:h-28 md:w-28 rounded-md"
       />
       <div className="flex flex-col text-white">
-        <span className="font-semibold">{song.title}</span>
-        <span className="font-light text-xs">{song.artist}</span>
+        <span className="font-semibold md:text-xl">{song.title}</span>
+        <span className="font-light text-xs md:text-lg">{song.artist}</span>
       </div>
     </motion.div>
   );
@@ -191,7 +188,7 @@ export function Navbar({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "fixed right-10 inset-y-0 max-h-2xl my-auto z-40 self-center",
+        "fixed right-5 md:right-10 inset-y-0 max-h-2xl my-auto z-40 self-center",
         className
       )}
     >
@@ -221,14 +218,14 @@ export function Navbar({ className }: { className?: string }) {
             <div className="flex gap-2">
               <button
                 onClick={handleShuffle}
-                className="px-4 py-1 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                className=" px-4 py-1 md:px-8 md:py-3 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
               >
                 <IconArrowsShuffle />
-                <span>Shuffle Color</span>
+                <span className="text-sm md:text-lg">Shuffle Color</span>
               </button>
               <button
                 onClick={handleReset}
-                className="px-4 py-1 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                className="px-4 py-1 md:px-8 md:py-3 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
               >
                 <IconRotateClockwise />
               </button>

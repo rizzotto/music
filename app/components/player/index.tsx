@@ -46,7 +46,7 @@ function Player() {
             onSeek={handleSeek}
           />
           <motion.div
-            className="flex gap-3 w-[300px]"
+            className="flex gap-3 w-[300px] md:2-[400px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2 }}
@@ -58,12 +58,16 @@ function Player() {
               }}
               animate={{ filter: `grayscale(${paused ? 1 : 0})` }}
               src={currentSong.cover}
-              className="rounded-md h-16 w-16 bg-slate-400"
+              className="rounded-md h-16 w-16 md:w-28 md:h-28 bg-slate-400"
               alt="album cover"
             />
             <div className="flex flex-col">
-              <span className="font-semibold">{currentSong.title}</span>
-              <span className="font-light text-xs">{currentSong.artist}</span>
+              <span className="font-semibold text-md md:text-2xl">
+                {currentSong.title}
+              </span>
+              <span className="font-light text-xs md:text-lg">
+                {currentSong.artist}
+              </span>
             </div>
           </motion.div>
         </div>

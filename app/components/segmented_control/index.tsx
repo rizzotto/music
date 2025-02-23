@@ -17,7 +17,7 @@ export default function SegmentedControl() {
   }
 
   return (
-    <div className="flex items-center relative mx-auto">
+    <div className="flex items-center relative mx-auto w-full">
       <MotionConfig transition={{ type: "spring", bounce: 0, duration: 0.4 }}>
         <motion.ul
           layout
@@ -31,7 +31,7 @@ export default function SegmentedControl() {
             <motion.li
               layout
               className={clsx(
-                "relative cursor-pointer px-2 py-1 text-sm outline-none transition-colors text-black"
+                "relative cursor-pointer px-2 py-1 text-sm md:px-4 md:py-2 md:text-lg outline-none transition-colors text-black"
               )}
               tabIndex={0}
               key={tab}
