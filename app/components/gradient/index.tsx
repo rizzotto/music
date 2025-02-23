@@ -1,7 +1,10 @@
+import { useAppContext } from "@/app/context/provider";
 import React from "react";
 import { ShaderGradientCanvas, ShaderGradient } from "shadergradient";
 
 function Gradient() {
+  const { gradient } = useAppContext();
+
   return (
     <ShaderGradientCanvas
       style={{ position: "absolute", pointerEvents: "none" }}
@@ -18,8 +21,7 @@ function Gradient() {
         color2={"#8319c1"}
         color3={"#4f0a83"}
         envPreset="city"
-        // check
-        grain="on"
+        grain={gradient.grain ? "on" : "off"}
         lightType="3d"
         positionX={0}
         positionY={0}
@@ -29,7 +31,13 @@ function Gradient() {
         rotationY={0}
         rotationZ={-60}
         shader="defaults"
-        type="waterPlane"
+        type={
+          gradient.type === "Water Plane"
+            ? "waterPlane"
+            : gradient.type === "Sphere"
+            ? "sphere"
+            : "plane"
+        }
         uAmplitude={0}
         uDensity={1.6}
         uFrequency={0}

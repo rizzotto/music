@@ -4,11 +4,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Gradient from "../gradient";
 import Slider from "../slider";
-import glitter from "@/public/glitter.jpg";
 import Title from "../title";
-import Settings from "../settings";
+import { useAppContext } from "@/app/context/provider";
+import { Navbar } from "../navbar_menu";
 
 function Player() {
+  const { currentSong } = useAppContext();
+
   const [paused, setPaused] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -194,24 +196,29 @@ function Player() {
             value={duration ? currentTime / duration : 0}
             onSeek={handleSeek}
           />
-          <div className="flex gap-3">
+          <motion.div
+            className="flex gap-3 w-[300px]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            key={currentSong.title}
+          >
             <motion.img
               initial={{
                 filter: "grayscale(1)",
               }}
               animate={{ filter: `grayscale(${paused ? 1 : 0})` }}
-              src={glitter.src}
+              src={currentSong.cover}
               className="rounded-md h-16 w-16 bg-slate-400"
               alt="album cover"
             />
             <div className="flex flex-col">
-              <span className="font-semibold">Glitter</span>
-              <span className="font-light text-xs">Tyler, The Creator</span>
+              <span className="font-semibold">{currentSong.title}</span>
+              <span className="font-light text-xs">{currentSong.artist}</span>
             </div>
-          </div>
+          </motion.div>
         </div>
-        <Settings />
-        <audio ref={audioRef} src="/glitter.mp3" preload="metadata" />
+        <audio ref={audioRef} src={currentSong.src} preload="metadata" />
         <div className="flex flex-col gap-1">
           <canvas ref={canvasRef} className="mt-4 w-[250px]" />
           <div className="track-duration text-xs">
@@ -219,6 +226,8 @@ function Player() {
           </div>
         </div>
       </div>
+
+      <Navbar />
 
       <motion.div
         className="absolute inset-0 z-[-1]"
@@ -238,5 +247,4 @@ function Player() {
     </motion.main>
   );
 }
-
 export default Player;

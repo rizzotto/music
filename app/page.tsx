@@ -1,5 +1,10 @@
 import Player from "./components/player";
+import { AppProvider } from "./context/provider";
 
 export default function Home() {
-  return <Player />;
+  return (
+    <AppProvider>
+      <Player />
+    </AppProvider>
+  );
 }
