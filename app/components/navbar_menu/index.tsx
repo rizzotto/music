@@ -221,16 +221,16 @@ export function Navbar({ className }: { className?: string }) {
             <div className="flex gap-2">
               <button
                 onClick={handleShuffle}
-                className="px-4 py-2 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                className="px-4 py-1 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
               >
-                <IconRotateClockwise />
+                <IconArrowsShuffle />
                 <span>Shuffle Color</span>
               </button>
               <button
                 onClick={handleReset}
-                className="px-4 py-2 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                className="px-4 py-1 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
               >
-                <IconArrowsShuffle />
+                <IconRotateClockwise />
               </button>
             </div>
             <SegmentedControl />
