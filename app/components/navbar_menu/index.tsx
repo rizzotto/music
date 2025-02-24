@@ -6,6 +6,9 @@ import {
   IconMusic,
   IconRotateClockwise,
   IconSettings,
+  IconVolume,
+  IconVolume2,
+  IconVolume3,
 } from "@tabler/icons-react";
 import {
   defaultColors,
@@ -17,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { Switch } from "../switch";
 import { Label } from "../label";
 import SegmentedControl from "../segmented_control";
+import { Volume } from "../volume";
 
 const transition = {
   type: "spring",
@@ -148,9 +152,32 @@ export const Song = ({ song }: { song: SongType }) => {
   );
 };
 
-export function Navbar({ className }: { className?: string }) {
+export function Navbar({
+  className,
+  audioRef,
+}: {
+  className?: string;
+  audioRef?: React.RefObject<HTMLAudioElement>;
+}) {
   const [active, setActive] = useState<string | null>(null);
   const { setGradient, gradient } = useAppContext();
+  const [volume, setVolume] = useState(0.5);
+  const [previousVolume, setPreviousVolume] = useState(volume);
+
+  useEffect(() => {
+    const audio = audioRef?.current;
+    if (audio) {
+      audio.volume = volume;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [volume]);
+
+  const handleVolumeChange = (value: number[]) => {
+    setVolume(value[0]);
+    if (audioRef?.current) {
+      audioRef.current.volume = value[0];
+    }
+  };
 
   function handleShuffle() {
     // Function to generate a random hex color
@@ -185,6 +212,15 @@ export function Navbar({ className }: { className?: string }) {
     });
   }
 
+  const toggleMute = () => {
+    if (volume === 0) {
+      setVolume(previousVolume);
+    } else {
+      setPreviousVolume(volume);
+      setVolume(0);
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -218,7 +254,7 @@ export function Navbar({ className }: { className?: string }) {
             <div className="flex gap-2">
               <button
                 onClick={handleShuffle}
-                className=" px-4 py-1 md:px-8 md:py-3 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                className="px-4 py-1 md:px-8 md:py-3 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
               >
                 <IconArrowsShuffle />
                 <span className="text-sm md:text-lg">Shuffle Color</span>
@@ -231,6 +267,27 @@ export function Navbar({ className }: { className?: string }) {
               </button>
             </div>
             <SegmentedControl />
+            <div className="flex gap-2 items-center">
+              <button
+                onClick={toggleMute}
+                className="p-1 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+              >
+                {volume === 0 ? (
+                  <IconVolume3 color="black" />
+                ) : volume > 0.5 ? (
+                  <IconVolume color="black" />
+                ) : (
+                  <IconVolume2 color="black" />
+                )}
+              </button>
+              <Volume
+                value={[volume]}
+                onValueChange={handleVolumeChange}
+                min={0}
+                max={1}
+                step={0.01}
+              />
+            </div>
           </div>
         </MenuItem>
       </Menu>

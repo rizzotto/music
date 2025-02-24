@@ -29,6 +29,7 @@ function Player() {
     if (currentSong.src) {
       switchSong(currentSong.src);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSong]);
 
   return (
@@ -85,7 +86,7 @@ function Player() {
         />
       </div>
 
-      <Navbar />
+      <Navbar audioRef={audioRef} />
 
       <motion.div
         className="absolute inset-0 z-[-1]"
