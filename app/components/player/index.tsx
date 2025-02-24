@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Gradient from "../gradient";
 import Slider from "../slider";
@@ -12,6 +12,7 @@ import Visualizer from "../visualizer"; // Import the Visualizer component
 
 function Player() {
   const { currentSong } = useAppContext();
+  const playerRef = useRef<HTMLDivElement | null>(null);
 
   const {
     analyserRef,
@@ -42,6 +43,7 @@ function Player() {
       }}
       className="relative flex flex-col h-svh px-10 py-14 z-[2] text-white md:p-20"
       onClick={handlePlayPause}
+      ref={playerRef}
     >
       <div className="flex flex-col justify-between h-full">
         <div className="flex flex-col gap-4 w-full max-w-[700px]">
@@ -86,7 +88,7 @@ function Player() {
         />
       </div>
 
-      <Navbar audioRef={audioRef} />
+      <Navbar audioRef={audioRef} playerRef={playerRef} />
 
       <motion.div
         className="absolute inset-0 z-[-1]"

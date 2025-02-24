@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
+  IconArrowsMaximize,
+  IconArrowsMinimize,
   IconArrowsShuffle,
   IconMusic,
   IconRotateClockwise,
@@ -155,14 +157,17 @@ export const Song = ({ song }: { song: SongType }) => {
 export function Navbar({
   className,
   audioRef,
+  playerRef,
 }: {
   className?: string;
   audioRef?: React.RefObject<HTMLAudioElement>;
+  playerRef?: React.RefObject<HTMLDivElement>;
 }) {
   const [active, setActive] = useState<string | null>(null);
   const { setGradient, gradient } = useAppContext();
   const [volume, setVolume] = useState(0.5);
   const [previousVolume, setPreviousVolume] = useState(volume);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     const audio = audioRef?.current;
@@ -221,6 +226,16 @@ export function Navbar({
     }
   };
 
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      playerRef?.current?.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -254,16 +269,26 @@ export function Navbar({
             <div className="flex gap-2">
               <button
                 onClick={handleShuffle}
-                className="px-4 py-1 md:px-8 md:py-3 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                className="px-4 py-1 md:px-4 md:py-2 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
               >
                 <IconArrowsShuffle />
                 <span className="text-sm md:text-lg">Shuffle Color</span>
               </button>
               <button
                 onClick={handleReset}
-                className="px-4 py-1 md:px-8 md:py-3 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                className="px-4 py-1 md:px-4 md:py-2 flex items-center gap-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
               >
                 <IconRotateClockwise />
+              </button>
+              <button
+                onClick={toggleFullscreen}
+                className="px-4 py-1 md:px-4 md:py-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+              >
+                {isFullscreen ? (
+                  <IconArrowsMinimize color="black" />
+                ) : (
+                  <IconArrowsMaximize color="black" />
+                )}
               </button>
             </div>
             <SegmentedControl />
